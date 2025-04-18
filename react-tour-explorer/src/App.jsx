@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Gallery from './components/Gallery';
+import DestinationSelector from './components/DestinationSelector';
 
 const API_URL = 'https://course-api.com/react-tours-project';
 
@@ -7,6 +8,7 @@ const App = () => {
   const [tours, setTours] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedDestination, setSelectedDestination] = useState('All Destinations');
 
   useEffect(() => {
     const fetchTours = async () => {
@@ -25,10 +27,29 @@ const App = () => {
     fetchTours();
   }, []);
 
+  const removeTour = (id) => {
+    setTours(tours.filter((tour) => tour.id !== id));
+  };
+
+  const filteredTours =
+    selectedDestination === 'All Destinations'
+      ? tours
+      : tours.filter((tour) => tour.name === selectedDestination);
+
   return (
     <main>
       <h1>Tour Explorer</h1>
-      <Gallery tours={tours} loading={loading} error={error} />
+      <DestinationSelector
+        tours={tours}
+        selected={selectedDestination}
+        onChange={setSelectedDestination}
+      />
+      <Gallery
+        tours={filteredTours}
+        loading={loading}
+        error={error}
+        removeTour={removeTour}
+      />
     </main>
   );
 };
