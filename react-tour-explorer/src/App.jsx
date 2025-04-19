@@ -10,20 +10,21 @@ const App = () => {
   const [error, setError] = useState(null);
   const [selectedDestination, setSelectedDestination] = useState('All Destinations');
 
-  useEffect(() => {
-    const fetchTours = async () => {
-      try {
-        const response = await fetch(API_URL);
-        if (!response.ok) throw new Error('Failed to fetch tours');
-        const data = await response.json();
-        setTours(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchTours = async () => {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error('Failed to fetch tours');
+      const data = await response.json();
+      setTours(data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTours();
   }, []);
 
@@ -35,6 +36,23 @@ const App = () => {
     selectedDestination === 'All Destinations'
       ? tours
       : tours.filter((tour) => tour.name === selectedDestination);
+
+  if (!loading && tours.length === 0) {
+    return (
+      <main>
+        <h2>No tours left. </h2>
+        <p>Please refresh to see the tours again.</p>
+        <button
+          onClick={() => {
+            setLoading(true);
+            fetchTours();
+          }}
+        >
+          Pretty Please Refresh
+        </button>
+      </main>
+    );
+  }
 
   return (
     <main>

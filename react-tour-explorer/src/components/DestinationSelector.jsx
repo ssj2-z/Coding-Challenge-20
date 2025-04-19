@@ -1,7 +1,7 @@
 import React from 'react';
 
 const DestinationSelector = ({ tours, selected, onChange }) => {
-  // Get unique destination names
+  // Customized saucey names
   const destinations = ['All Destinations', ...new Set(tours.map((tour) => tour.name))];
 
   return (
